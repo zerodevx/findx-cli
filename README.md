@@ -19,25 +19,16 @@ scripts or CI.
 $ npm i -g findx-cli
 ```
 
-## Examples
-
-#### Convert all JPG files to PNG
+## Usage
 
 ```
 $ findx '**/*.jpg' -- convert {{path}} {{dir}}/{{name}}.png
 ```
 
-#### Untar each tar file in its own directory
+This searches for all files matching the glob pattern, then runs the provided command against each
+match.
 
-```
-$ findx '**/*.tar' -d -- tar -xvf {{base}}
-```
-
-#### Ignore some files and run shell-specific commands
-
-```
-$ findx '**/LICENSE !ignored/**' -S -- 'cd {{dir}} && cat LICENSE'
-```
+See below for more usage [examples](#examples).
 
 ## Options
 
@@ -71,6 +62,26 @@ are available:
 | {{base}} | file.txt                | File name with extension |
 | {{name}} | file                    | Name portion             |
 | {{ext}}  | .txt                    | Extension portion        |
+
+## Examples
+
+#### Untar each tar file in its own directory
+
+```
+$ findx '**/*.tar' -d -- tar -xvf {{base}}
+```
+
+#### Ignore some files and run shell-specific commands
+
+```
+$ findx '**/LICENSE !ignored/**' -S -- 'cd {{dir}} && cat LICENSE'
+```
+
+#### Dry-run glob matches
+
+```
+$ findx '**/*.@(txt,xml)'
+```
 
 ## Development
 
