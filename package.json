@@ -1,0 +1,48 @@
+{
+  "name": "findx-cli",
+  "version": "0.1.0",
+  "description": "CLI to find and execute command for every glob match",
+  "author": "Jason Lee <jason@zerodevx.com>",
+  "type": "module",
+  "bin": {
+    "findx": "./cli.js"
+  },
+  "scripts": {
+    "test": "prettier --write . && eslint . && ava",
+    "prepublishOnly": "npm run test"
+  },
+  "dependencies": {
+    "commander": "^9.0.0",
+    "execa": "^6.1.0",
+    "fast-glob": "^3.2.11",
+    "mustache": "^4.2.0",
+    "p-map": "^5.3.0",
+    "tasuku": "^1.0.2"
+  },
+  "devDependencies": {
+    "ava": "^4.1.0",
+    "eslint": "^8.10.0",
+    "eslint-config-prettier": "^8.5.0",
+    "prettier": "^2.5.1"
+  },
+  "engines": {
+    "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+  },
+  "files": [
+    "./cli.js"
+  ],
+  "license": "ISC",
+  "homepage": "https://npmjs.com/package/findx-cli",
+  "repository": "github:zerodevx/findx-cli",
+  "keywords": [
+    "cli",
+    "find",
+    "exec",
+    "foreach",
+    "each",
+    "file",
+    "execute",
+    "run",
+    "command"
+  ]
+}
