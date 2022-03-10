@@ -4,14 +4,16 @@
 
 Elegant replacement for [`each-cli`](https://www.npmjs.com/package/each-cli),
 [`foreach-cli`](https://www.npmjs.com/package/foreach-cli) and \*nix
-[`find -exec`](https://man7.org/linux/man-pages/man1/find.1.html) command. Very useful for NPM
+[`find -exec`](https://man7.org/linux/man-pages/man1/find.1.html) command in
+very little lines of
+[code](https://github.com/zerodevx/findx-cli/blob/main/cli.js). Useful for NPM
 scripts or CI.
 
 - [x] Cross-platform
 - [x] Concurrency support
-- [x] Continues on error, then exits with code 1
-- [x] Logs output of every execution
-- [x] Displays progress indicator when TTY
+- [x] Continue on error, then exit with code 1
+- [x] Control output of every execution
+- [x] Task progress indication in TTY
 
 ## Install
 
@@ -25,8 +27,8 @@ $ npm i -g findx-cli
 $ findx '**/*.jpg' -- convert {{path}} {{dir}}/{{name}}.png
 ```
 
-This searches for all files matching the glob pattern, then runs the provided command against each
-match.
+This searches for all files matching the glob pattern, then runs the provided
+command against each match.
 
 See below for more usage [examples](#examples).
 
@@ -43,38 +45,40 @@ Arguments:
 
 Options:
   -C, --concurrent <max>  concurrent number of executions (default: 10)
-  -S, --shell             run each execution in new shell
-  -d, --cd                change to path directory for each run
+  --log <level>           log level (choices: "stdout", "stderr", "all",
+                          "none", default: "all")
+  --sh                    run each execution in new shell
+  --cd                    change to path directory for each run
   -V, --version           output the version number
   -h, --help              display help for command
 ```
 
 ## Command templating
 
-Write your command using [mustache](https://github.com/janl/mustache.js/) syntax. The following tags
-are available:
+Write your command using [mustache](https://github.com/janl/mustache.js/)
+syntax. The following tags are available:
 
-| Tag      | Example                 | Description              |
-| -------- | ----------------------- | ------------------------ |
-| {{path}} | /home/user/dir/file.txt | Full path of file        |
-| {{root}} | /                       | Root                     |
-| {{dir}}  | /home/user/dir          | Directory portion        |
-| {{base}} | file.txt                | File name with extension |
-| {{name}} | file                    | Name portion             |
-| {{ext}}  | .txt                    | Extension portion        |
+| Tag        | Eg                      | Desc                     |
+| ---------- | ----------------------- | ------------------------ |
+| `{{path}}` | /home/user/dir/file.txt | Full path of file        |
+| `{{root}}` | /                       | Root                     |
+| `{{dir}}`  | /home/user/dir          | Directory portion        |
+| `{{base}}` | file.txt                | File name with extension |
+| `{{name}}` | file                    | Name portion             |
+| `{{ext}}`  | .txt                    | Extension portion        |
 
 ## Examples
 
 #### Untar each tar file in its own directory
 
 ```
-$ findx '**/*.tar' -d -- tar -xvf {{base}}
+$ findx '**/*.tar' --cd -- tar -xvf {{base}}
 ```
 
 #### Ignore some files and run shell-specific commands
 
 ```
-$ findx '**/LICENSE !ignored/**' -S -- 'cd {{dir}} && cat LICENSE'
+$ findx '**/LICENSE !ignored/**' --sh -- 'cd {{dir}} && cat LICENSE'
 ```
 
 #### Dry-run glob matches
@@ -85,7 +89,8 @@ $ findx '**/*.@(txt,xml)'
 
 ## Development
 
-Standard Github [contribution workflow](https://github.com/firstcontributions/first-contributions)
+Standard Github
+[contribution workflow](https://github.com/firstcontributions/first-contributions)
 applies.
 
 #### Tests

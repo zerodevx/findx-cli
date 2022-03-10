@@ -1,9 +1,10 @@
 #!/usr/bin/env node
-import { program } from 'commander'
+import { program, Option } from 'commander'
 import { execaCommand } from 'execa'
 import fastglob from 'fast-glob'
 import mustache from 'mustache'
 import tasuku from 'tasuku'
+import chalk from 'chalk'
 import pmap from 'p-map'
 import fs from 'node:fs/promises'
 import path from 'node:path'
@@ -20,8 +21,13 @@ program
   .argument('<globs>', 'globs to match')
   .argument('[commands...]', 'commands to execute')
   .option('-C, --concurrent <max>', 'concurrent number of executions', 10)
-  .option('-S, --shell', 'run each execution in new shell')
-  .option('-d, --cd', 'change to path directory for each run')
+  .addOption(
+    new Option('--log <level>', 'log level')
+      .choices(['stdout', 'stderr', 'all', 'none'])
+      .default('all')
+  )
+  .option('--sh', 'run each execution in new shell')
+  .option('--cd', 'change to path directory for each run')
   .version(version)
   .parse()
 
@@ -43,11 +49,9 @@ if (!cmd) {
   process.exit()
 }
 
-let errflag
 mustache.escape = (noop) => noop
-
-const run = (match) =>
-  execaCommand(
+const exe = async (match) => {
+  const spawn = await execaCommand(
     mustache.render(cmd, {
       path: match,
       ...path.parse(match)
@@ -55,18 +59,26 @@ const run = (match) =>
     {
       all: true,
       reject: false,
-      ...(opts.shell && { shell: true }),
+      ...(opts.sh && { shell: true }),
       ...(opts.cd && { cwd: path.dirname(match) })
     }
-  ).then(({ exitCode, command, all }) => {
-    if (exitCode) errflag = true
-    console.log(`${exitCode ? '✖' : '✔'} ${command}\n${all}`)
-  })
+  )
+  const { exitCode: err, escapedCommand: esc, [opts.log]: log } = spawn
+  const { red: r, green: g, gray: y } = chalk
+  console.log(`${err ? r('✖') : g('✔')} ${y(esc)}${log ? `\n${log}` : ''}`)
+  return err
+}
 
-const runtty = (match) => tasuku(match, () => run(match)).then(({ clear }) => clear())
+let count = 0
+const exetty = async (match) => {
+  const task = await tasuku(`[${++count}/${matches.length}] ${match}`, () =>
+    exe(match)
+  )
+  task.clear()
+  return task.result
+}
 
-await pmap(matches, process.stdout.isTTY ? runtty : run, {
+const run = await pmap(matches, process.stdout.isTTY ? exetty : exe, {
   concurrency: opts.concurrent
 })
-
-if (errflag) process.exit(1)
+if (run.some((r) => r)) process.exit(1)

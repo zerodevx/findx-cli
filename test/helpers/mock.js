@@ -31,9 +31,14 @@ switch (args[0]) {
     }
     break
   }
+  case 'logs': {
+    console.log('test-stdout')
+    throw new Error('test-stderr')
+  }
   default: {
-    const r = rand(1, 10)
-    await sleep(r * 1000)
-    console.log(r)
+    const t = rand(1, 10)
+    await sleep(t * 1000)
+    if (!rand(0, 5)) throw new Error(`Random error: ${t}s`)
+    console.log(`Mock took: ${t}s`)
   }
 }
