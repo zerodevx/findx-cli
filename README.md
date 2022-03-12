@@ -13,7 +13,7 @@ scripts or CI.
 - [x] Concurrency support
 - [x] Continue on error, then exit with code 1
 - [x] Control output of every execution
-- [x] Task progress indication in TTY
+- [x] Automatically show task progress in TTY
 
 ## Install
 
@@ -53,10 +53,10 @@ Options:
   -h, --help              display help for command
 ```
 
-## Command templating
+## Command Templating
 
 Write your command using [mustache](https://github.com/janl/mustache.js/)
-syntax. The following tags are available:
+syntax. The following tags are exposed:
 
 | Tag        | Eg                      | Desc                     |
 | ---------- | ----------------------- | ------------------------ |
