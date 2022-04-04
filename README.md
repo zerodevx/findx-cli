@@ -84,7 +84,7 @@ $ findx '**/LICENSE !ignored/**' --sh -- 'cd {{dir}} && cat LICENSE'
 #### Dry-run glob matches
 
 ```
-$ findx '**/*.@(txt,xml)'
+$ findx '**/*.{txt,xml}'
 ```
 
 ## Development
